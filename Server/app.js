@@ -6,14 +6,17 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const userRoute = require("./routes/users");
 const path = require("path");
+const fileUpload = require("express-fileupload");
 const app = express();
 app.use(express.json());
+app.use(fileUpload());
 dotenv.config({
   path: path.join(__dirname, ".env"),
 });
 
 connectDB();
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerJsDocs));
+
 app.use("/users", userRoute);
 
 let arrOfUsers = [
@@ -50,8 +53,13 @@ app.get("/usersQuery", (req, res) => {
   res.status(200).send(obj);
 });
 
-app.get("/upload", (req, res) => {
- 
+app.post("/upload", (req, res) => {
+  const file = req.files.file;
+  console.log(req.headers);
+  let path = __dirname + "/upload/" + Date.now() + ".jpg";
+  file.mv(path, (err) => {
+    res.send("OK");
+  });
 });
 
 const PORT = process.env.PORT;

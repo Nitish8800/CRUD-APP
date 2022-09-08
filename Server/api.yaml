@@ -13,7 +13,9 @@ info:
     description: This is my local server
     -url: "http://comany.com/"  
     description: This is my Company server
-    
+  tags:
+    name: "Users Data"
+
 schemes: [http,https]    
 
 paths:
@@ -32,6 +34,7 @@ paths:
           description: User Error
         500:
           description: Internal Server Error
+
 #Return a Object
   /user:
     get:
@@ -155,9 +158,39 @@ paths:
           type: file
           required: true
           description: File Upload
+        - in: formData
+          name: id
+          type: integer
+          required: true
+          description: ID of integer
+        - in: header
+          name: auth
+          schema:
+            type: string
+        - in: cookie
+          name: debug
+          schema:
+            type: string
       responses:
         200:
           description: OK    
+
+#Get all list
+  /users/list:
+    get:
+      summary: Returns all list of Users
+      description: It will return all users data.
+      responses: 
+          200:
+            description: Success
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/sucessResponseObject"
+          400:
+            description: User Error
+          500:
+            description: Internal Server Error
 
 
 components:
@@ -170,3 +203,6 @@ components:
             required: true
           name:
             type: string
+      sucessResponseObject:
+        type: object
+            

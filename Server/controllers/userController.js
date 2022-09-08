@@ -4,7 +4,8 @@ const bcrypt = require("bcryptjs");
 const userList = async (req, res) => {
   let data = await Users.find();
 
-  res.json(data);
+  // res.json(data);
+  res.status(200).send(data);
 };
 
 // userAdd
