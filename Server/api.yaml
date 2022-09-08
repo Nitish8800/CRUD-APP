@@ -1,0 +1,50 @@
+swagger: "2.0"
+info:
+  title: Indus Net Technologies
+  description: this is my company documentation made by you.
+  version: 1.0
+  contact:
+    email: nitish.kumar@indusnet.co.in
+  liscence:
+    name: Apache 2.0
+    url: "http://apache.org"  
+  servers:
+    -url: "http://localhost:8080/"
+    description: This is my local server
+    -url: "http://comany.com/"  
+    description: This is my Company server
+    
+schemes: [http,https]    
+
+paths:
+#Return a String
+  /string:
+    get:
+      summary: Returns a String
+      description: It is just returning a fake string.
+      responses: 
+        200:
+          description: Success
+          schema:
+            type: string
+            example: "A fake String"
+        400:
+          description: User Error
+        500:
+          description: Internal Server Error
+#Return a Object
+  /string:
+    get:
+      summary: Returns a String
+      description: It is just returning a fake string.
+      responses: 
+        200:
+          description: Success
+          schema:
+            type: string
+            example: "A fake String"
+        400:
+          description: User Error
+        500:
+          description: Internal Server Error
+
