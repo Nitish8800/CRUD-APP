@@ -33,16 +33,40 @@ paths:
         500:
           description: Internal Server Error
 #Return a Object
-  /string:
+  /user:
     get:
-      summary: Returns a String
-      description: It is just returning a fake string.
+      summary: This return a single object
+      description: Returning a Object
       responses: 
         200:
           description: Success
           schema:
-            type: string
-            example: "A fake String"
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+        400:
+          description: User Error
+        500:
+          description: Internal Server Error
+
+#Returning Array of Users
+  /user:
+    get:
+      summary: This return a single object
+      description: Returning a Object
+      responses: 
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
         400:
           description: User Error
         500:
