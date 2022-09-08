@@ -53,22 +53,120 @@ paths:
           description: Internal Server Error
 
 #Returning Array of Users
-  /user:
+  /allusers:
     get:
-      summary: This return a single object
-      description: Returning a Object
+      summary: return array of users
+      description: Array Return
       responses: 
         200:
           description: Success
           schema:
-            type: object
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
         400:
           description: User Error
         500:
           description: Internal Server Error
 
+#Returning Array of Users Dynamically by id
+  /allusers/{allusersId}:
+    get:
+      summary: return array of users
+      description: Array Return
+      parameters:
+        - name: allusersId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses: 
+        200:
+          description: Success
+
+#Post json/body
+  # /create:
+  #   post:
+  #     summary: Posting Data
+  #     produces:
+  #       - application/json
+  #     consumes:
+  #       - application/json
+  #     parameters:
+  #     - in: body
+  #       name: user
+  #       schema:
+  #         type: object
+  #         properties:
+  #           id:
+  #             type: integer
+  #           name:
+  #             type: string
+  #     responses: 
+  #       200:
+  #         description: OK
+
+
+# Defination 
+  /create:
+      post:
+        summary: Posting Data
+        produces:
+          - application/json
+        consumes:
+          - application/json
+        parameters:
+        - in: body
+          name: user
+          schema:
+            $ref: "#/components/schemas/User"
+        responses: 
+          200:
+            description: OK
+
+#Query
+  /usersQuery:
+    get:
+      parameters:
+      - in: query
+        name: id
+        type: integer
+        enum: [1,2,3]
+      - in: query
+        name: age
+        type: integer
+      responses:
+        200:
+          description: OK  
+
+#File Upload
+  /upload:
+    post:
+      consumes:
+        -multipart/form-data
+      parameters:
+        - in: formData
+          name: file
+          type: file
+          required: true
+          description: File Upload
+      responses:
+        200:
+          description: OK    
+
+
+components:
+    schemas: 
+      User:
+        type: object
+        properties:
+          id:
+            type: integer
+            required: true
+          name:
+            type: string
