@@ -11,8 +11,8 @@ info:
   servers:
     -url: "http://localhost:8080/"
     description: This is my local server
-    -url: "http://comany.com/"  
-    description: This is my Company server
+    -urls: "http://comany.com/"  
+    descriptions: This is my Company server
   tags:
     name: "Users Data"
 
