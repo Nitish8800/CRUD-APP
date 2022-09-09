@@ -12,7 +12,7 @@ const userSchema = mongoose.Schema(
       unique: true,
       required: true,
     },
-    isAdmin: { type: Boolean, default: false },
+    isAdmin: { type: String, default: false },
     pic: {
       type: "String",
       default:

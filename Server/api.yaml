@@ -185,12 +185,127 @@ paths:
             description: Success
             content:
               application/json:
-                schema:
-                  $ref: "#/components/schemas/sucessResponseObject"
+                type: object
+                properties:
+                  id: 
+                    type: string
           400:
             description: User Error
           500:
             description: Internal Server Error
+
+#Add New User
+  /users/add:
+    post:
+      summary: Add New User
+      description: It will add new users data.
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            $ref: "#/components/schemas/sucessResponseObject"
+      responses: 
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/sucessResponseObject"
+        400:
+          description: User Error
+        500:
+          description: Internal Server Error
+
+#User Login
+  /users/login:
+    post:
+      summary: User Login
+      description: It will login the User.
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: user login
+          schema:
+            $ref: "#/components/schemas/loginSuccessResponseObject"
+      responses: 
+        200:
+          description: OK
+        400:
+          description: User Error
+        500:
+          description: Internal Server Error
+
+#Update USer Data
+  /users/update/{id}:
+    put:
+      summary: User Update Data
+      description: It will update the User.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - in: body
+          name: user update
+          schema:
+            $ref: "#/components/schemas/sucessResponseObject"
+      responses: 
+        200:
+          description: Suceessfully Update
+        400:
+          description: User Error
+        500:
+          description: Internal Server Error
+
+#Update USer Data
+  /users/delete/{id}:
+    delete:
+      summary: User Data Delete 
+      description: It will delete the User.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses: 
+        200:
+          description: Suceessfully Delete
+        400:
+          description: User Error
+        500:
+          description: Internal Server Error
+
+#Get Single USer Data
+  /users/getuser/{id}:
+    get:
+      summary: Single User Data Get 
+      description: It will get single User.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses: 
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/sucessResponseObject"
+        400:
+          description: User Error
+        500:
+          description: Internal Server Error
 
 
 components:
@@ -205,4 +320,55 @@ components:
             type: string
       sucessResponseObject:
         type: object
+        properties:
+          name:
+            type: string
+            required: true
+          email:
+            type: string
+            required: true
+          password:
+            type: string
+            required: true
+          phoneNumber:
+            type: integer
+            required: true
+          isAdmin:
+            type: string
+          pic:
+            type: string
+          tokens:
+            type: array
+      loginSuccessResponseObject:
+        type: object
+        properties:
+          email:
+            type: string
+            required: true
+          password:
+            type: string
+            required: true
+      sucessResponseData:
+        title: Success Response
+        type: object
+        properties:
+          status:
+           type: integer
+          message:
+            type: string
+          data:
+            type: object
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
+              phoneNumber:
+                type: integer
+              isAdmin:
+                type: string
+              pic:
+                type: string
             

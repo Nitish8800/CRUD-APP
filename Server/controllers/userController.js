@@ -22,10 +22,10 @@ const userAdd = async (req, res) => {
     let response = await data.save();
     let mytoken = await data.getAuthToken();
     console.log(req.body);
-    res.status(200).json({ message: "ok", mytoken, response });
+    res.status(200).send({ message: "ok", mytoken, response });
   } catch (error) {
     console.log(error);
-    res.status(400).json({
+    res.status(400).send({
       error: error.message,
     });
   }
@@ -65,7 +65,7 @@ const userLogin = async (req, res) => {
     });
   }
 
-  res.status(200).json({ message: "ok", user, responseType });
+  res.status(200).send({ message: "ok", user, responseType });
 };
 
 // userUpdate
@@ -78,13 +78,12 @@ const userUpdate = async (req, res) => {
       user.email = req.body.email || user.email;
       user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
       user.pic = req.body.pic || user.pic;
+      user.isAdmin = req.body.isAdmin || user.isAdmin;
       if (req.body.password) {
         user.password = req.body.password;
       }
-
       const updatedUser = await user.save();
-
-      res.json({
+      res.status(200).send({
         _id: updatedUser._id,
         name: updatedUser.name,
         email: updatedUser.email,
@@ -114,7 +113,7 @@ const userDelete = async (req, res) => {
       return res.status(404).send("User Not Found");
     }
 
-    res.status(200).json({
+    res.status(200).send({
       success: true,
       message: "User deleted succesfully",
     });
@@ -135,7 +134,7 @@ const getSingleUser = async (req, res) => {
       return res.status(404).send("User Not Found");
     }
 
-    res.status(200).json({
+    res.status(200).send({
       success: true,
       message: "ok",
       user,
