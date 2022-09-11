@@ -1,0 +1,107 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "description": "this is my company documentation made by me",
+      "version": "1.0.5",
+      "title": "Indus Net Technologies",
+      "contact": {
+        "email": "nitish.kumar@indusnet.co.in"
+      }
+    },
+      
+      "tags": [       
+        {
+          "name": "Users Data",
+          "description": "All User Details"
+        }
+      ]
+       ,
+    "schemes": ["http", "https"],
+    "paths": {
+      "/string": {
+        "get": {
+          "tags": [
+            "Users Data"
+          ],
+          "summary": "Returns a String",
+          "description": "It is just returning a fake string.",
+          "responses": {
+            "201": {
+              "description": "successful operation",
+              "schema": {
+                  "type": "string",
+                  "example": "A Fake String"
+                }                
+            },
+            "400": {
+                "description": "User Error"
+            },
+              "404": {
+                "description": "User not found"
+              },
+              "500": {
+                "description": "Internal Server Error"
+              }
+            }
+          }
+        },
+
+      "/users/list": {
+        "get": {
+          "tags": [
+            "Users Data"
+          ],
+          "summary": "Returns all list of user",
+          "description": "It will return all users data",
+          "responses": {
+            "201": {
+              "description": "Success",
+              "content": {
+                "application/json":{
+                  "type": "object"
+                }  
+            }             
+            },
+            "400": {
+                "description": "User Error"
+            },
+              "404": {
+                "description": "User not found"
+              },
+              "500": {
+                "description": "Internal Server Error"
+              }
+            }
+          }
+        },
+      "/users/add": {
+        "post": {
+          "tags": [
+            "Users Data"
+          ],
+          "summary": "Add New User",
+          "description": "It will return all users data",
+          "responses": {
+            "201": {
+              "description": "Success",
+              "content": {
+                "application/json":{
+                  "type": "object"
+                }  
+            }             
+            },
+            "400": {
+                "description": "User Error"
+            },
+              "404": {
+                "description": "User not found"
+              },
+              "500": {
+                "description": "Internal Server Error"
+              }
+            }
+          }
+        }
+      }
+    }
+

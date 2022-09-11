@@ -1,7 +1,9 @@
 const express = require("express");
-const swaggerUI = require("swagger-ui-express");
-const YAML = require("yamljs");
-const swaggerJsDocs = YAML.load("./api.yaml");
+// const YAML = require("yamljs");
+// const swaggerJsDocs = YAML.load("./api.yaml");
+// const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerui = require("swagger-ui-express")
+const swaggerdoc = require("./swagger/swagger.json")
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const userRoute = require("./routes/users");
@@ -14,10 +16,13 @@ dotenv.config({
   path: path.join(__dirname, ".env"),
 });
 
-connectDB();
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerJsDocs));
 
+connectDB();
+// app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+
+app.use("/api-docs", swaggerui.serve, swaggerui.setup(swaggerdoc))
 app.use("/users", userRoute);
+
 
 let arrOfUsers = [
   { id: 1, name: "Nitish Kumar" },
