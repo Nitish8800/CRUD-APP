@@ -1,107 +1,362 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "description": "this is my company documentation made by me",
-      "version": "1.0.5",
-      "title": "Indus Net Technologies",
-      "contact": {
-        "email": "nitish.kumar@indusnet.co.in"
+  "swagger": "2.0",
+  "info": {
+    "description": "this is my company documentation made by me",
+    "version": "1.0.5",
+    "title": "Indus Net Technologies",
+    "contact": {
+      "email": "nitish.kumar@indusnet.co.in"
+    }
+  },
+
+  "tags": [
+    {
+      "name": "Users Data",
+      "description": "All User Details"
+    }
+  ],
+  "schemes": ["http", "https"],
+  "paths": {
+    "/string": {
+      "get": {
+        "tags": ["Users Data"],
+        "summary": "Returns a String",
+        "description": "It is just returning a fake string.",
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string",
+              "example": "A Fake String"
+            }
+          },
+          "400": {
+            "description": "User Error"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
-      
-      "tags": [       
-        {
-          "name": "Users Data",
-          "description": "All User Details"
-        }
-      ]
-       ,
-    "schemes": ["http", "https"],
-    "paths": {
-      "/string": {
-        "get": {
-          "tags": [
-            "Users Data"
-          ],
-          "summary": "Returns a String",
-          "description": "It is just returning a fake string.",
-          "responses": {
-            "201": {
-              "description": "successful operation",
-              "schema": {
-                  "type": "string",
-                  "example": "A Fake String"
-                }                
-            },
-            "400": {
-                "description": "User Error"
-            },
-              "404": {
-                "description": "User not found"
-              },
-              "500": {
-                "description": "Internal Server Error"
-              }
-            }
-          }
-        },
 
-      "/users/list": {
-        "get": {
-          "tags": [
-            "Users Data"
-          ],
-          "summary": "Returns all list of user",
-          "description": "It will return all users data",
-          "responses": {
-            "201": {
-              "description": "Success",
-              "content": {
-                "application/json":{
-                  "type": "object"
-                }  
-            }             
-            },
-            "400": {
-                "description": "User Error"
-            },
-              "404": {
-                "description": "User not found"
-              },
-              "500": {
-                "description": "Internal Server Error"
+    "/users/list": {
+      "get": {
+        "tags": ["Users Data"],
+        "summary": "Returns all list of user",
+        "description": "It will return all users data",
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "type": "object"
+              }
+            }
+          },
+          "400": {
+            "description": "User Error"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/add": {
+      "post": {
+        "tags": ["Users Data"],
+        "summary": "Add New User",
+        "description": "It will return all users data",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptLanguage"
+          }
+        ],
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["name", "email", "password", "phoneNumber"],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/badRequestResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serverErrorResponse"
+                }
               }
             }
           }
         },
-      "/users/add": {
-        "post": {
-          "tags": [
-            "Users Data"
-          ],
-          "summary": "Add New User",
-          "description": "It will return all users data",
-          "responses": {
-            "201": {
-              "description": "Success",
-              "content": {
-                "application/json":{
-                  "type": "object"
-                }  
-            }             
-            },
-            "400": {
-                "description": "User Error"
-            },
-              "404": {
-                "description": "User not found"
-              },
-              "500": {
-                "description": "Internal Server Error"
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["Users Data"],
+        "summary": "User Login",
+        "description": "It will login the User",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptLanguage"
+          }
+        ],
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email", "password"],
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
               }
             }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "type": "object"
+              }
+            }
+          },
+          "400": {
+            "description": "User Error"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     }
+  },
 
+  "components": {
+    "schemas": {
+      "serverErrorResponse": {
+        "title": "Server Error Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "err": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "status": 500,
+          "message": "Something Went Wrong",
+          "err": "Error"
+        }
+      },
+      "badRequestResponse": {
+        "title": "Bad Request Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "validationErrors": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "status": 400,
+          "message": "Something Went Wrong",
+          "validationErrors": "Error"
+        }
+      },
+      "forbiddenResponse": {
+        "title": "Forbidden Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "status": 403,
+          "message": "Forbidden"
+        }
+      },
+      "noDataResponseObject": {
+        "title": "No Data Object Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "example": {
+          "status": 204,
+          "message": "No Data Found",
+          "data": {}
+        }
+      },
+      "createdResponse": {
+        "title": "Created Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "example": {
+          "status": 201,
+          "message": "Created",
+          "data": {}
+        }
+      },
+      "successResponseObject": {
+        "title": "Success Response",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "example": {
+          "status": 200,
+          "message": "Successful",
+          "data": {}
+        }
+      }
+    },
+    "parameters": {
+      "AcceptLanguage": {
+        "name": "accept-language",
+        "in": "header",
+        "description": "Incase we want to send current language along our request",
+        "schema": {
+          "type": "string",
+          "default": "en"
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      },
+      "userAccessToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "userRefreshToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
