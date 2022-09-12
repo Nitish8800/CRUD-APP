@@ -1,5 +1,6 @@
 const Users = require("../models/userModel");
 const bcrypt = require("bcryptjs");
+const sendToken = require("../utils/jwtTokens");
 
 const userList = async (req, res) => {
   let data = await Users.find();
@@ -10,7 +11,7 @@ const userList = async (req, res) => {
 
 // userAdd
 const userAdd = async (req, res) => {
-  let { name, email, password, phoneNumber, pic } = req.body;
+  let { name, email, password, phoneNumber, pic, isAdmin } = req.body;
   try {
     let data = await Users.create({
       name,
@@ -18,11 +19,11 @@ const userAdd = async (req, res) => {
       password,
       phoneNumber,
       pic,
+      isAdmin,
     });
     let response = await data.save();
-    let mytoken = await data.getAuthToken();
-    console.log(req.body);
-    res.status(200).send({ message: "ok", mytoken, response });
+    sendToken(data, 200, res);
+    console.log(response);
   } catch (error) {
     console.log(error);
     res.status(400).send({
@@ -47,8 +48,8 @@ const userLogin = async (req, res) => {
       if (match) {
         responseType.message = "Login Sucessfull";
         responseType.token = "ok";
-        // let mytoken = await user.getAuthToken();
-        // res.status(200).json({ message: "Login Scessfully", user });
+        let mytoken = await user.getAuthToken();
+        res.status(200).json({ message: "Login Scessfully", user });
       } else {
         responseType.message = "Password is wrong";
 

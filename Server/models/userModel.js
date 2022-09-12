@@ -12,7 +12,7 @@ const userSchema = mongoose.Schema(
       unique: true,
       required: true,
     },
-    isAdmin: { type: String, default: false },
+    isAdmin: { type: "String", default: false },
     pic: {
       type: "String",
       default:
@@ -39,17 +39,10 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-userSchema.methods.getAuthToken = async function (data) {
-  let params = {
-    id: this._id,
-    email: this.email,
-    phone: this.phoneNumber,
-  };
-
-  var tokenValue = jwt.sign(params, process.env.JWT_SECRET);
-  this.tokens = this.tokens.concat({ token: tokenValue });
-  await this.save();
-  return tokenValue;
+userSchema.methods.getJwtToken = function (id) {
+  return jwt.sign({ id: this._id }, process.env.JWT_SCERET_KEY, {
+    expiresIn: process.env.JWT_EXPIRES,
+  });
 };
 
 const Users = mongoose.model("Users", userSchema);
