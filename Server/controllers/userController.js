@@ -1,6 +1,5 @@
 const Users = require("../models/userModel");
 const bcrypt = require("bcryptjs");
-const sendToken = require("../utils/jwtTokens");
 
 const userList = async (req, res) => {
   let data = await Users.find();
@@ -11,7 +10,7 @@ const userList = async (req, res) => {
 
 // userAdd
 const userAdd = async (req, res) => {
-  let { name, email, password, phoneNumber, pic, isAdmin } = req.body;
+  let { name, email, password, phoneNumber, pic } = req.body;
   try {
     let data = await Users.create({
       name,
@@ -19,11 +18,20 @@ const userAdd = async (req, res) => {
       password,
       phoneNumber,
       pic,
-      isAdmin,
     });
+    let token = await data.getJwtToken();
+    // LcO7uuzjPxMaMYJjSIkGSkKgbe1h0w3GYlktrdIGJSM
+    res.cookie("jwt", token, {
+      expires: new Date(Date.now() + 10923 * 24 * 60 * 60 * 1000),
+      httpOnly: true,
+    });
+    // console.log("cookie", cookie);
+    res.cookie();
+
     let response = await data.save();
-    sendToken(data, 200, res);
-    console.log(response);
+
+    res.status(200).send({ message: "ok", data });
+    console.log("response", response);
   } catch (error) {
     console.log(error);
     res.status(400).send({
@@ -37,6 +45,8 @@ const userLogin = async (req, res) => {
   let { email, password } = req.body;
   let user = await Users.findOne({ email });
 
+  console.log(req.headers);
+
   var responseType = {
     message: "ok",
   };
@@ -48,25 +58,37 @@ const userLogin = async (req, res) => {
       if (match) {
         responseType.message = "Login Sucessfull";
         responseType.token = "ok";
-        let mytoken = await user.getAuthToken();
-        res.status(200).json({ message: "Login Scessfully", user });
+        let token = await user.getJwtToken();
+
+        res.cookie("jwt", token, {
+          expires: new Date(Date.now() + 10923 * 24 * 60 * 60 * 1000),
+          httpOnly: true,
+        });
+
+        // console.log("req.cookies.jwt", req.cookies.jwt);
+
+        console.log("Token", token);
+        res.status(200).send({
+          message: "Login Scessfully",
+          user,
+          token: { accessToken: token, expiresIn: process.env.JWT_EXPIRES },
+        });
       } else {
         responseType.message = "Password is wrong";
 
-        // res.status(401).json({ message: "Error", message: "Password is wrong" });
+        res
+          .status(401)
+          .send({ message: "Error", message: "Password is wrong" });
       }
     } else {
-      // res.status(404).json({ message: "User Not Found" });
+      res.status(404).send({ message: "User Not Found" });
       responseType.message = "User Not Found";
     }
   } catch (error) {
-    console.log(error);
-    res.status(400).json({
+    res.status(400).send({
       error: error.message,
     });
   }
-
-  res.status(200).send({ message: "ok", user, responseType });
 };
 
 // userUpdate

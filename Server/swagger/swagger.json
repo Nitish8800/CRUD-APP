@@ -15,7 +15,6 @@
       "description": "All User Details"
     }
   ],
-  "schemes": ["http", "https"],
   "paths": {
     "/string": {
       "get": {
@@ -25,9 +24,13 @@
         "responses": {
           "201": {
             "description": "successful operation",
-            "schema": {
-              "type": "string",
-              "example": "A Fake String"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "A Fake String"
+                }
+              }
             }
           },
           "400": {
@@ -53,7 +56,9 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "type": "object"
+                "schema": {
+                  "$ref": "#/components/schemas/sucessResponseObject"
+                }
               }
             }
           },
@@ -74,17 +79,32 @@
         "tags": ["Users Data"],
         "summary": "Add New User",
         "description": "It will return all users data",
-        "produces": ["application/json", "application/xml"],
-        "consumes": ["application/json"],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/components/schemas/sucessResponseObject"
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email", "name", "phoneNumber", "password"],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
             }
-          }
-        ],
+          },
+          "required": true
+        },
         "responses": {
           "201": {
             "description": "Success",
@@ -101,16 +121,99 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/defination/ErrorResponseObject"
+                  "$ref": "#/components/schemas/ErrorResponseObject"
                 }
               }
             }
           },
           "404": {
-            "description": "User not found"
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["Users Data"],
+        "summary": "Login New User",
+        "description": "It will login the users data",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email", "password"],
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sucessResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
           }
         }
       }
@@ -122,20 +225,16 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "required": true
+            "type": "string"
           },
           "email": {
-            "type": "string",
-            "required": true
+            "type": "string"
           },
           "password": {
-            "type": "string",
-            "required": true
+            "type": "string"
           },
           "phoneNumber": {
-            "type": "string",
-            "required": true
+            "type": "string"
           },
           "isAdmin": {
             "type": "string"
@@ -144,43 +243,13 @@
             "type": "string"
           }
         }
-      }
-    }
-  },
-  "defination": {
-    "ErrorResponseObject": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "string",
-          "required": true
-        }
-      }
-    },
-    "sucessResponseObject": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "required": true
-        },
-        "email": {
-          "type": "string",
-          "required": true
-        },
-        "password": {
-          "type": "string",
-          "required": true
-        },
-        "phoneNumber": {
-          "type": "string",
-          "required": true
-        },
-        "isAdmin": {
-          "type": "string"
-        },
-        "pic": {
-          "type": "string"
+      },
+      "ErrorResponseObject": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
         }
       }
     }

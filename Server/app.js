@@ -5,9 +5,11 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const userRoute = require("./routes/users");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use(fileUpload());
 dotenv.config({
   path: path.join(__dirname, ".env"),

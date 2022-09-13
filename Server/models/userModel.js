@@ -12,20 +12,12 @@ const userSchema = mongoose.Schema(
       unique: true,
       required: true,
     },
-    isAdmin: { type: "String", default: false },
+    isAdmin: { type: "String", default: "user" },
     pic: {
       type: "String",
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
-
-    tokens: [
-      {
-        token: {
-          type: String,
-        },
-      },
-    ],
   },
   { timestamps: true }
 );
@@ -39,10 +31,20 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-userSchema.methods.getJwtToken = function (id) {
-  return jwt.sign({ id: this._id }, process.env.JWT_SCERET_KEY, {
+userSchema.methods.getJwtToken = async function () {
+  let params = {
+    id: this._id,
+    email: this.email,
+    phone: this.phoneNumber,
+  };
+
+  var tokenValue = jwt.sign(params, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES,
   });
+  // var verifyuser = jwt.verify(tokenValue, process.env.JWT_SECRET);
+  // this.tokens = this.tokens.concat({ token: tokenValue });
+  // await this.save();
+  return tokenValue;
 };
 
 const Users = mongoose.model("Users", userSchema);
