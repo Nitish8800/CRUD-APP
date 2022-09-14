@@ -10,7 +10,13 @@ const auth = async (req, res, next) => {
 
   const verifyUser = jwt.verify(token, process.env.JWT_SECRET);
 
-  req.user = await Users.findById(verifyUser.id);
+  const user = await Users.findById(verifyUser.id);
+
+  if (!user) {
+    return res.status(404).send("User Not Found");
+  }
+
+  req.user = user;
 
   console.log("verifyUSer", verifyUser);
   console.log("user", req.user);

@@ -46,11 +46,11 @@
       }
     },
 
-    "/users/list": {
+    "/users/admin/list": {
       "get": {
         "tags": ["Users Data"],
-        "summary": "Returns all list of user",
-        "description": "It will return all users data",
+        "summary": "Returns all list of the user by admin",
+        "description": "It will return all users data by admin",
         "responses": {
           "201": {
             "description": "Success",
@@ -151,6 +151,75 @@
     },
     "/users/login": {
       "post": {
+        "tags": ["Users Data"],
+        "summary": "Login New User",
+        "description": "It will login the users data",
+        "requestBody": {
+          "description": "An object defining our schema for this request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email", "password"],
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sucessResponseObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/update": {
+      "put": {
         "tags": ["Users Data"],
         "summary": "Login New User",
         "description": "It will login the users data",

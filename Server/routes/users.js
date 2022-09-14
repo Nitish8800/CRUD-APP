@@ -22,7 +22,14 @@ router.post("/add", validateUsers, userController.userAdd);
 
 router.post("/login", userController.userLogin);
 
-router.put("/update/:id", auth, userController.userUpdate);
+router.put("/update", validateUsers, auth, userController.userUpdate);
+
+router.put(
+  "/admin/update/:id",
+  validateUsers,
+  auth,
+  userController.userUpdateByAdmin
+);
 
 router.delete(
   "/admin/delete/:id",

@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const userRoute = require("./routes/users");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const { errors: celebrateErrors } = require("celebrate");
 const fileUpload = require("express-fileupload");
 const app = express();
 app.use(express.json());
@@ -63,6 +64,8 @@ app.post("/upload", (req, res) => {
     res.send("OK");
   });
 });
+
+app.use(celebrateErrors());
 
 const PORT = process.env.PORT;
 

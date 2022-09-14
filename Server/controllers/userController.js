@@ -93,7 +93,7 @@ const userLogin = async (req, res) => {
 
 // userUpdate
 const userUpdate = async (req, res) => {
-  const user = await Users.findById(req.params.id);
+  const user = await Users.findById(req.user.id);
 
   try {
     if (user) {
@@ -101,7 +101,6 @@ const userUpdate = async (req, res) => {
       user.email = req.body.email || user.email;
       user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
       user.pic = req.body.pic || user.pic;
-      user.isAdmin = req.body.isAdmin || user.isAdmin;
       if (req.body.password) {
         user.password = req.body.password;
       }
@@ -170,6 +169,42 @@ const getSingleUser = async (req, res) => {
   }
 };
 
+// userUpdate by Admin
+const userUpdateByAdmin = async (req, res) => {
+  const user = await Users.findByIdAndUpdate(req.params.id);
+
+  try {
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+      user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
+      user.pic = req.body.pic || user.pic;
+      user.isAdmin = req.body.isAdmin || user.isAdmin;
+      if (req.body.password) {
+        user.password = req.body.password;
+      }
+      const updatedUser = await user.save();
+      res.status(200).send({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phoneNumber: updatedUser.phoneNumber,
+        pic: updatedUser.pic,
+        password: updatedUser.password,
+        isAdmin: updatedUser.isAdmin,
+      });
+    } else {
+      res.status(404);
+      throw new Error("User Not Found");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   userList,
   userAdd,
@@ -177,4 +212,5 @@ module.exports = {
   userUpdate,
   userDelete,
   getSingleUser,
+  userUpdateByAdmin,
 };
