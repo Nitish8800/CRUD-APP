@@ -3,9 +3,12 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const { auth, authorizeRoles } = require("../middleware/auth");
 const validateUsers = require("../middleware/validator");
+const upload = require("../middleware/multerFileUpload");
+
 
 const bodyParser = require("body-parser");
 router.use(bodyParser.json());
+// router.use(bodyParser());
 
 router.get("/", (req, res) => {
   res.send("Hello World Home ");
@@ -18,7 +21,12 @@ router.get(
   userController.userList
 );
 
-router.post("/add", validateUsers, userController.userAdd);
+router.post(
+  "/add",
+  upload.single("pic"),
+  validateUsers,
+  userController.userAdd
+);
 
 router.post("/login", userController.userLogin);
 

@@ -7,17 +7,22 @@ const userRoute = require("./routes/users");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const { errors: celebrateErrors } = require("celebrate");
-const fileUpload = require("express-fileupload");
+// const fileUpload = require("express-fileupload");
+
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(fileUpload());
+// app.use(fileUpload());
 dotenv.config({
   path: path.join(__dirname, ".env"),
 });
 
 connectDB();
 // app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+
+
+app.use(express.static(path.join(__dirname, 'upload')))
+   
 
 app.use("/api-docs", swaggerui.serve, swaggerui.setup(swaggerdoc));
 app.use("/users", userRoute);
@@ -56,14 +61,14 @@ app.get("/usersQuery", (req, res) => {
   res.status(200).send(obj);
 });
 
-app.post("/upload", (req, res) => {
-  const file = req.files.file;
-  console.log(req.headers);
-  let path = __dirname + "/upload/" + Date.now() + ".jpg";
-  file.mv(path, (err) => {
-    res.send("OK");
-  });
-});
+// app.post("/upload", (req, res) => {
+//   const file = req.files.file;
+//   console.log(req.headers);
+//   let path = __dirname + "/upload/" + Date.now() + ".jpg";
+//   file.mv(path, (err) => {
+//     res.send("OK");
+//   });
+// });
 
 app.use(celebrateErrors());
 

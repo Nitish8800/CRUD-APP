@@ -10,17 +10,16 @@ const userList = async (req, res) => {
 
 // userAdd
 const userAdd = async (req, res) => {
-  let { name, email, password, phoneNumber, pic } = req.body;
+  let { name, email, password, phoneNumber } = req.body;
   try {
-    let data = await Users.create({
+    let user = await Users.create({
       name,
       email,
       password,
       phoneNumber,
-      pic,
     });
-    let token = await data.getJwtToken();
-    // LcO7uuzjPxMaMYJjSIkGSkKgbe1h0w3GYlktrdIGJSM
+
+    let token = await user.getJwtToken();
     res.cookie("jwt", token, {
       expires: new Date(Date.now() + 10923 * 24 * 60 * 60 * 1000),
       httpOnly: true,
@@ -28,9 +27,14 @@ const userAdd = async (req, res) => {
     // console.log("cookie", cookie);
     res.cookie();
 
-    let response = await data.save();
+    console.log("images", req.file);
 
-    res.status(200).send({ message: "ok", data });
+    user.pic = "/users/" + req.file.filename;
+
+    let response = await user.save();
+
+    res.status(200).send({ message: "ok", user });
+
     console.log("response", response);
   } catch (error) {
     console.log(error);
