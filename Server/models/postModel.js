@@ -5,7 +5,6 @@ const PostSchema = mongoose.Schema(
     title: {
       type: String,
       required: true,
-      unique: true,
     },
     description: {
       type: String,
@@ -15,13 +14,19 @@ const PostSchema = mongoose.Schema(
       type: String,
       required: false,
     },
-    username: {
-      type: String,
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Users",
       required: true,
     },
-    categories: {
+    tags: {
+      // name description id
       type: Array,
       required: false,
+    },
+    slug: {
+      type: String,
+      unique: true,
     },
     createdDate: {
       type: Date,
