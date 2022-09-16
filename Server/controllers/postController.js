@@ -26,7 +26,6 @@ const createPost = async (request, response) => {
     console.log("generatedSlug : ", generatedSlug);
 
     await post.save();
-
     await post.populate("author");
 
     response.status(200).send({

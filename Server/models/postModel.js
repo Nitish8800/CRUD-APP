@@ -20,7 +20,6 @@ const PostSchema = mongoose.Schema(
       required: true,
     },
     tags: {
-      // name description id
       type: Array,
       required: false,
     },
