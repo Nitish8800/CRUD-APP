@@ -55,7 +55,7 @@ const updatePost = async (request, response) => {
 
     response.status(200).send("post updated successfully");
   } catch (error) {
-    response.status(500).send({ error: error.message });
+    response.status(500).send({ success: false, error: error.message });
   }
 };
 
@@ -70,7 +70,7 @@ const deletePost = async (request, response) => {
 
     response.status(200).send("post deleted successfully");
   } catch (error) {
-    response.status(500).json({ error: error.message });
+    response.status(500).json({ success: false, error: error.message });
   }
 };
 
@@ -95,7 +95,7 @@ const getAllPosts = async (request, response) => {
 
     response.status(200).send(posts);
   } catch (error) {
-    response.status(500).send(error);
+    response.status(500).send({ success: false, error: error.message });
   }
 };
 

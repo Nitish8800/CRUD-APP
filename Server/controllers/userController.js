@@ -36,6 +36,7 @@ const userAdd = async (req, res) => {
     res.status(200).send({ message: "ok", user });
 
     console.log("response", response);
+
   } catch (error) {
     console.log(error);
     res.status(400).send({
