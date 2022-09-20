@@ -5,14 +5,20 @@ const createPost = async (request, response) => {
   try {
     const post = await new Post(request.body);
 
+    if (!post) {
+      return res
+        .status(404)
+        .send({ success: false, message: "Post Not Found" });
+    }
+
     const title = request.body.title;
     // console.log(title, slug(title, "-"));
 
     let generatedSlug = slug(title, "-");
-    let findSlug = await Post.findOne({ slug: generatedSlug });
+    const findSlug = await Post.findOne({ slug: generatedSlug });
 
     if (findSlug) {
-      let previousSlug = findSlug.slug;
+      const previousSlug = findSlug.slug;
 
       console.log("previousSlug : ", previousSlug);
 
@@ -46,14 +52,14 @@ const updatePost = async (request, response) => {
     const post = await Post.findById(request.params.id);
 
     if (!post) {
-      response.status(404).send({ msg: "Post not found" });
+      response.status(404).send({ success: false, message: "Post not found" });
     }
 
     await Post.findByIdAndUpdate(request.params.id, {
       $set: request.body,
     });
 
-    response.status(200).send("post updated successfully");
+    response.status(200).send("Post Updated Successfully");
   } catch (error) {
     response.status(500).send({ success: false, error: error.message });
   }

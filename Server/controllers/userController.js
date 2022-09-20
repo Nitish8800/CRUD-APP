@@ -5,7 +5,11 @@ const userList = async (req, res) => {
   let data = await Users.find();
 
   // res.json(data);
-  res.status(200).send(data);
+  res.status(200).send({
+    success: true,
+    message: "all user get successfully",
+    data: data,
+  });
 };
 
 // userAdd
@@ -33,13 +37,17 @@ const userAdd = async (req, res) => {
 
     let response = await user.save();
 
-    res.status(200).send({ message: "ok", user });
+    res.status(200).send({
+      success: true,
+      message: "User saved successfully",
+      data: user,
+    });
 
     console.log("response", response);
-
   } catch (error) {
     console.log(error);
     res.status(400).send({
+      success: false,
       error: error.message,
     });
   }
@@ -48,49 +56,41 @@ const userAdd = async (req, res) => {
 // userLogin
 const userLogin = async (req, res) => {
   let { email, password } = req.body;
-  let user = await Users.findOne({ email });
 
-  console.log(req.headers);
-
-  var responseType = {
-    message: "ok",
-  };
   try {
-    if (user) {
-      console.log(user.password);
-      let match = await bcrypt.compare(password, user.password);
+    const user = await Users.findOne({ email });
 
-      if (match) {
-        responseType.message = "Login Sucessfull";
-        responseType.token = "ok";
-        let token = await user.getJwtToken();
-
-        res.cookie("jwt", token, {
-          expires: new Date(Date.now() + 10923 * 24 * 60 * 60 * 1000),
-          httpOnly: true,
-        });
-
-        // console.log("req.cookies.jwt", req.cookies.jwt);
-
-        console.log("Token", token);
-        res.status(200).send({
-          message: "Login Scessfully",
-          user,
-          token: { accessToken: token, expiresIn: process.env.JWT_EXPIRES },
-        });
-      } else {
-        responseType.message = "Password is wrong";
-
-        res
-          .status(401)
-          .send({ message: "Error", message: "Password is wrong" });
-      }
-    } else {
-      res.status(404).send({ message: "User Not Found" });
-      responseType.message = "User Not Found";
+    if (!user) {
+      return res.status(400).send({
+        success: false,
+        message: "User Not Found",
+      });
     }
+
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      return res.status(400).send({
+        success: false,
+        message: "Password is wrong",
+      });
+    }
+    const token = await user.getJwtToken();
+
+    res.cookie("jwt", token, {
+      expires: new Date(Date.now() + 10923 * 24 * 60 * 60 * 1000),
+      httpOnly: true,
+    });
+
+    res.status(200).send({
+      success: true,
+      message: "Login Successfully",
+      user,
+      token: { accessToken: token, expiresIn: process.env.JWT_EXPIRES },
+    });
   } catch (error) {
     res.status(400).send({
+      success: false,
       error: error.message,
     });
   }
@@ -98,34 +98,32 @@ const userLogin = async (req, res) => {
 
 // userUpdate
 const userUpdate = async (req, res) => {
-  const user = await Users.findById(req.user.id);
-
+  // console.log("User update");
+  if (!req.user) {
+    return res.status(400).send({
+      success: false,
+      message: "User Not Found",
+    });
+  }
   try {
-    if (user) {
-      user.name = req.body.name || user.name;
-      user.email = req.body.email || user.email;
-      user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
-      user.pic = req.body.pic || user.pic;
-      if (req.body.password) {
-        user.password = req.body.password;
-      }
-      const updatedUser = await user.save();
-      res.status(200).send({
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        phoneNumber: updatedUser.phoneNumber,
-        pic: updatedUser.pic,
-        password: updatedUser.password,
-        isAdmin: updatedUser.isAdmin,
-      });
-    } else {
-      res.status(404);
-      throw new Error("User Not Found");
+    const user = await Users.findById(req.user.id);
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
+    user.pic = req.body.pic || user.pic;
+    if (req.body.password) {
+      user.password = req.body.password;
     }
+    const updatedUser = await user.save();
+    res.status(200).send({
+      success: true,
+      message: "User Updated successfully",
+      data: updatedUser,
+    });
   } catch (error) {
     console.log(error);
-    res.status(400).json({
+    res.status(400).send({
+      success: false,
       error: error.message,
     });
   }
@@ -133,11 +131,12 @@ const userUpdate = async (req, res) => {
 
 // userDelete
 const userDelete = async (req, res) => {
-  const user = await Users.findByIdAndDelete(req.params.id);
-
   try {
+    const user = await Users.findByIdAndDelete(req.params.id);
     if (!user) {
-      return res.status(404).send("User Not Found");
+      return res
+        .status(404)
+        .send({ success: false, message: "User Not Found" });
     }
 
     res.status(200).send({
@@ -158,17 +157,18 @@ const getSingleUser = async (req, res) => {
 
   try {
     if (!user) {
-      return res.status(404).send("User Not Found");
+      return res
+        .status(404)
+        .send({ success: false, message: "User Not Found" });
     }
 
-    res.status(200).send({
-      success: true,
-      message: "ok",
-      user,
-    });
+    res
+      .status(200)
+      .send({ success: true, message: "User saved successfully", data: user });
   } catch (error) {
     console.log(error);
     res.status(400).json({
+      success: false,
       error: error.message,
     });
   }

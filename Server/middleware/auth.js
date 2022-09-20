@@ -13,7 +13,10 @@ const auth = async (req, res, next) => {
   const user = await Users.findById(verifyUser.id);
 
   if (!user) {
-    return res.status(404).send("User Not Found");
+    return res.status(400).send({
+      success: false,
+      message: "User Not Found",
+    });
   }
 
   req.user = user;

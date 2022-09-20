@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const { auth, authorizeRoles } = require("../middleware/auth");
-const validateUsers = require("../middleware/validator");
 const tagsController = require("../controllers/postController");
 
 const bodyParser = require("body-parser");
