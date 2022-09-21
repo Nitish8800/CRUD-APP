@@ -1,7 +1,20 @@
 const Post = require("../models/postModel");
 const slug = require("slug");
+const { ObjectID } = require("mongodb");
+const Tags = require("../models/tagsModel");
 
 const createPost = async (request, response) => {
+  const tagIds = request.body.tags;
+  // const uniqueTags = new Set(tagIds); // ["63296172ae1a15920bdc236e","63296172ae1a15920bdc236r"]
+
+  for (var i = 0; i < tagIds.length; i++) {
+    if (!ObjectID.isValid(tagIds[i])) {
+      return response.status(400).send({
+        success: false,
+        message: `Invalid Object ID ${tagIds[i]}`,
+      });
+    }
+  }
   try {
     const post = await new Post(request.body);
 
@@ -12,7 +25,6 @@ const createPost = async (request, response) => {
     }
 
     const title = request.body.title;
-    // console.log(title, slug(title, "-"));
 
     let generatedSlug = slug(title, "-");
     const findSlug = await Post.findOne({ slug: generatedSlug });
@@ -29,10 +41,28 @@ const createPost = async (request, response) => {
 
     post.slug = generatedSlug;
     post.author = request.user._id;
+
     console.log("generatedSlug : ", generatedSlug);
 
+    console.log("post.tags : ", post.tags);
+
+    const uniqueTags = new Set(tagIds); // ["63296172ae1a15920bdc236e","63296172ae1a15920bdc236r"]
+    const tagFoundByID = await Tags.find({
+      _id: {
+        $in: Array.from(uniqueTags),
+      },
+    });
+
+    if (uniqueTags.size !== tagFoundByID.length) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Tags Not Found" });
+    }
+
+    // console.log(post.author);
     await post.save();
-    await post.populate("author");
+    await post.populate(["author", "tags"]);
+    // await post.populate("tags");
 
     response.status(200).send({
       success: true,
@@ -49,6 +79,14 @@ const createPost = async (request, response) => {
 
 const updatePost = async (request, response) => {
   try {
+    if (!ObjectID.isValid(request.params.id)) {
+      // console.log("Error", request.params.id);
+      return res.status(400).send({
+        success: false,
+        message: `Invalid Object ID : ${request.params.id}`,
+      });
+    }
+
     const post = await Post.findById(request.params.id);
 
     if (!post) {
@@ -59,7 +97,13 @@ const updatePost = async (request, response) => {
       $set: request.body,
     });
 
-    response.status(200).send("Post Updated Successfully");
+    await post.populate("tags");
+
+    response.status(200).send({
+      success: true,
+      message: "Post updated successfully",
+      data: post,
+    });
   } catch (error) {
     response.status(500).send({ success: false, error: error.message });
   }
@@ -67,6 +111,13 @@ const updatePost = async (request, response) => {
 
 const deletePost = async (request, response) => {
   try {
+    if (!ObjectID.isValid(request.params.id)) {
+      // console.log("Error", request.params.id);
+      return res.status(400).send({
+        success: false,
+        message: `Invalid Object ID : ${request.params.id}`,
+      });
+    }
     const post = await Post.findById(request.params.id);
 
     if (!post) {
@@ -74,7 +125,11 @@ const deletePost = async (request, response) => {
     }
     await post.delete();
 
-    response.status(200).send("post deleted successfully");
+    response.status(200).send({
+      success: true,
+      message: "Post Deleted Successfully",
+      data: post,
+    });
   } catch (error) {
     response.status(500).json({ success: false, error: error.message });
   }
@@ -82,9 +137,47 @@ const deletePost = async (request, response) => {
 
 const getPost = async (request, response) => {
   try {
+    if (!ObjectID.isValid(request.params.id)) {
+      // console.log("Error", request.params.id);
+      return res.status(400).send({
+        success: false,
+        message: `Invalid Object ID : ${request.params.id}`,
+      });
+    }
     const post = await Post.findById(request.params.id);
 
-    response.status(200).json(post);
+    await post.populate("tags");
+
+    response.status(200).json({
+      success: true,
+      message: "Get Single Post Successfully",
+      data: post,
+    });
+  } catch (error) {
+    response.status(500).json(error);
+  }
+};
+
+const getPostBySlug = async (request, response) => {
+  try {
+    const post = await Post.findOne(request.params.slug);
+
+    if (!post) {
+      return res.status(400).send({
+        success: false,
+        message: "Post Not Found",
+      });
+    }
+
+    // await post.populate("tags");
+
+    console.log(post);
+
+    response.status(200).json({
+      success: true,
+      message: "Get Single Post Successfully By Slug",
+      data: post,
+    });
   } catch (error) {
     response.status(500).json(error);
   }
@@ -99,10 +192,23 @@ const getAllPosts = async (request, response) => {
     else if (category) posts = await Post.find({ categories: category });
     else posts = await Post.find({});
 
-    response.status(200).send(posts);
+    await post.populate("tags");
+
+    response.status(200).send({
+      success: true,
+      message: "Get All Post Successfully",
+      data: posts,
+    });
   } catch (error) {
     response.status(500).send({ success: false, error: error.message });
   }
 };
 
-module.exports = { createPost, updatePost, deletePost, getPost, getAllPosts };
+module.exports = {
+  createPost,
+  updatePost,
+  deletePost,
+  getPost,
+  getAllPosts,
+  getPostBySlug,
+};

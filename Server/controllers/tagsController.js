@@ -1,4 +1,5 @@
 const Tags = require("../models/tagsModel");
+const { ObjectID } = require("mongodb");
 
 // Create a new tag
 const createTag = async (request, response) => {
@@ -20,6 +21,13 @@ const createTag = async (request, response) => {
 
 const updateTag = async (request, response) => {
   try {
+    if (!ObjectID.isValid(request.params.id)) {
+      // console.log("Error", request.params.id);
+      return res.status(400).send({
+        success: false,
+        message: `Invalid Object ID : ${request.params.id}`,
+      });
+    }
     const tag = await Tags.findById(request.params.id);
 
     if (!tag) {
@@ -38,6 +46,13 @@ const updateTag = async (request, response) => {
 
 const deleteTag = async (request, response) => {
   try {
+    if (!ObjectID.isValid(request.params.id)) {
+      // console.log("Error", request.params.id);
+      return res.status(400).send({
+        success: false,
+        message: `Invalid Object ID : ${request.params.id}`,
+      });
+    }
     const tag = await Tags.findById(request.params.id);
 
     if (!tag) {
@@ -53,6 +68,13 @@ const deleteTag = async (request, response) => {
 
 const getTag = async (request, response) => {
   try {
+    if (!ObjectID.isValid(request.params.id)) {
+      // console.log("Error", request.params.id);
+      return res.status(400).send({
+        success: false,
+        message: `Invalid Object ID : ${request.params.id}`,
+      });
+    }
     const tag = await Tags.findById(request.params.id);
 
     response.status(200).send({

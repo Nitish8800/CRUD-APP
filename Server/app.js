@@ -6,7 +6,7 @@ const connectDB = require("./config/db");
 const userRoute = require("./routes/users");
 const adminRoute = require("./routes/admin");
 const postRoute = require("./routes/posts");
-// const tagsRoute = require("./routes/tags");
+const tagsRoute = require("./routes/tags");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const { errors: celebrateErrors } = require("celebrate");
@@ -29,7 +29,7 @@ app.use("/api-docs", swaggerui.serve, swaggerui.setup(swaggerdoc));
 app.use("/users", userRoute);
 app.use("/admin", adminRoute);
 app.use("/posts", postRoute);
-// app.use("/tags", tagsRoute);
+app.use("/tags", tagsRoute);
 
 // let arrOfUsers = [
 //   { id: 1, name: "Nitish Kumar" },

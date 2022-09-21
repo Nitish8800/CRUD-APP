@@ -1,5 +1,6 @@
 const Users = require("../models/userModel");
 const bcrypt = require("bcryptjs");
+const { ObjectID } = require("mongodb");
 
 const userList = async (req, res) => {
   let data = await Users.find();
@@ -7,7 +8,7 @@ const userList = async (req, res) => {
   // res.json(data);
   res.status(200).send({
     success: true,
-    message: "all user get successfully",
+    message: "All User Get Successfully",
     data: data,
   });
 };
@@ -132,6 +133,11 @@ const userUpdate = async (req, res) => {
 // userDelete
 const userDelete = async (req, res) => {
   try {
+    if (!ObjectID.isValid(req.params.id)) {
+      // console.log("Error", req.params.id);
+      return res.status(400).send(`No Record with given ID ${req.params.id}`);
+    }
+
     const user = await Users.findByIdAndDelete(req.params.id);
     if (!user) {
       return res
@@ -153,9 +159,15 @@ const userDelete = async (req, res) => {
 
 // getSingleUser
 const getSingleUser = async (req, res) => {
-  const user = await Users.findById(req.params.id);
-
   try {
+    if (!ObjectID.isValid(req.params.id)) {
+      // console.log("Error", req.params.id);
+      return res.status(400).send({
+        success: false,
+        message: `Invalid Object ID ${req.params.id}`,
+      });
+    }
+    const user = await Users.findById(req.params.id);
     if (!user) {
       return res
         .status(404)
@@ -176,9 +188,12 @@ const getSingleUser = async (req, res) => {
 
 // userUpdate by Admin
 const userUpdateByAdmin = async (req, res) => {
-  const user = await Users.findByIdAndUpdate(req.params.id);
-
   try {
+    if (!ObjectID.isValid(req.params.id)) {
+      // console.log("Error", req.params.id);
+      return res.status(400).send(`No Record with given ID ${req.params.id}`);
+    }
+    const user = await Users.findByIdAndUpdate(req.params.id);
     if (user) {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;

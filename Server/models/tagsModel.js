@@ -5,13 +5,8 @@ const TagsSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  descriptions: {
+  description: {
     type: String,
-    required: true,
-  },
-  id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Post",
     required: true,
   },
 });
