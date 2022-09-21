@@ -5,7 +5,6 @@ const Tags = require("../models/tagsModel");
 
 const createPost = async (request, response) => {
   const tagIds = request.body.tags;
-  // const uniqueTags = new Set(tagIds); // ["63296172ae1a15920bdc236e","63296172ae1a15920bdc236r"]
 
   for (var i = 0; i < tagIds.length; i++) {
     if (!ObjectID.isValid(tagIds[i])) {
@@ -59,10 +58,8 @@ const createPost = async (request, response) => {
         .send({ success: false, message: "Tags Not Found" });
     }
 
-    // console.log(post.author);
     await post.save();
     await post.populate(["author", "tags"]);
-    // await post.populate("tags");
 
     response.status(200).send({
       success: true,
@@ -80,7 +77,6 @@ const createPost = async (request, response) => {
 const updatePost = async (request, response) => {
   try {
     if (!ObjectID.isValid(request.params.id)) {
-      // console.log("Error", request.params.id);
       return res.status(400).send({
         success: false,
         message: `Invalid Object ID : ${request.params.id}`,
@@ -112,7 +108,6 @@ const updatePost = async (request, response) => {
 const deletePost = async (request, response) => {
   try {
     if (!ObjectID.isValid(request.params.id)) {
-      // console.log("Error", request.params.id);
       return res.status(400).send({
         success: false,
         message: `Invalid Object ID : ${request.params.id}`,
@@ -149,8 +144,6 @@ const getPost = async (request, response) => {
       "tags",
     ]);
 
-    // await post.populate("tags");
-
     response.status(200).json({
       success: true,
       message: "Get Single Post Successfully",
@@ -175,8 +168,6 @@ const getPostBySlug = async (request, response) => {
       });
     }
 
-    // await post.populate("tags");
-
     console.log(post);
 
     response.status(200).send({
@@ -190,15 +181,11 @@ const getPostBySlug = async (request, response) => {
 };
 
 const getAllPosts = async (request, response) => {
-  let username = request.query.username;
-  let category = request.query.category;
+  let tag = request.query.tags;
   let posts;
   try {
-    if (username) posts = await Post.find({ username: username });
-    else if (category) posts = await Post.find({ categories: category });
+    if (tag) posts = await Post.find({ tags: { tag } });
     else posts = await Post.find({}).populate(["author", "tags"]);
-
-    // await posts.populate("tags");
 
     response.status(200).send({
       success: true,
