@@ -15,7 +15,7 @@ router.get("/:id", postController.getPost);
 
 router.get("/", postController.getAllPosts);
 
-router.get("/slug/:slug", postController.getPostBySlug);
+router.get("/slugs/:slug", postController.getPostBySlug);
 
 router.post(
   "/create",

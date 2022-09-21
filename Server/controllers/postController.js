@@ -144,9 +144,12 @@ const getPost = async (request, response) => {
         message: `Invalid Object ID : ${request.params.id}`,
       });
     }
-    const post = await Post.findById(request.params.id);
+    const post = await Post.findById(request.params.id).populate([
+      "author",
+      "tags",
+    ]);
 
-    await post.populate("tags");
+    // await post.populate("tags");
 
     response.status(200).json({
       success: true,
@@ -160,7 +163,10 @@ const getPost = async (request, response) => {
 
 const getPostBySlug = async (request, response) => {
   try {
-    const post = await Post.findOne(request.params.slug);
+    const post = await Post.findOne({ slug: request.params.slug }).populate([
+      "author",
+      "tags",
+    ]);
 
     if (!post) {
       return res.status(400).send({
@@ -173,7 +179,7 @@ const getPostBySlug = async (request, response) => {
 
     console.log(post);
 
-    response.status(200).json({
+    response.status(200).send({
       success: true,
       message: "Get Single Post Successfully By Slug",
       data: post,
@@ -190,9 +196,9 @@ const getAllPosts = async (request, response) => {
   try {
     if (username) posts = await Post.find({ username: username });
     else if (category) posts = await Post.find({ categories: category });
-    else posts = await Post.find({});
+    else posts = await Post.find({}).populate(["author", "tags"]);
 
-    await post.populate("tags");
+    // await posts.populate("tags");
 
     response.status(200).send({
       success: true,
