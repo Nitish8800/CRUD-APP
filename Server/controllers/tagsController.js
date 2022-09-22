@@ -12,15 +12,6 @@ const createTag = async (request, response) => {
         .send({ success: false, message: "Tag Not Found" });
     }
 
-    const name = request.body.name;
-    const findname = await Tags.findOne({ name: name });
-
-    if (findname) {
-      return response
-        .status(404)
-        .send({ success: false, message: "Tag Shouldn't Duplicate" });
-    }
-
     await tag.save();
 
     response.status(200).send({
@@ -49,15 +40,6 @@ const updateTag = async (request, response) => {
       return response
         .status(404)
         .send({ success: false, message: "Tag Not Found" });
-    }
-
-    const name = request.body.name;
-    const findname = await Tags.findOne({ name: name });
-
-    if (findname) {
-      return response
-        .status(404)
-        .send({ success: false, message: "Tag Shouldn't Duplicate" });
     }
 
     await Tags.findByIdAndUpdate(request.params.id, {
@@ -134,21 +116,14 @@ const getAllTags = async (request, response) => {
         .status(404)
         .json({ success: false, msg: "Tag Not Found" });
     }
-    response
-      .status(200)
-      .send({
-        success: true,
-        message: "All Tags get successfully",
-        data: tags,
-      });
+    response.status(200).send({
+      success: true,
+      message: "All Tags get successfully",
+      data: tags,
+    });
   } catch (error) {
     response.status(500).send({ success: false, error: error.message });
   }
 };
-
-
-
-
-
 
 module.exports = { createTag, updateTag, deleteTag, getTag, getAllTags };

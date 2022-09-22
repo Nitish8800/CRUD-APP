@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const TagsSchema = mongoose.Schema({
   name: {
     type: String,
-    required: true,
     unique: true,
+    required: true,
   },
   description: {
     type: String,

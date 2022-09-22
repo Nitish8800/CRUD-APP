@@ -184,7 +184,8 @@ const getAllPosts = async (request, response) => {
   let tag = request.query.tags;
   let posts;
   try {
-    if (tag) posts = await Post.find({ tags: { tag } });
+    if (tag)
+      posts = await Post.find({ tags: tag }).populate(["author", "tags"]);
     else posts = await Post.find({}).populate(["author", "tags"]);
 
     response.status(200).send({
